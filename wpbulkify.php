@@ -27,16 +27,21 @@ require_once WPB_PLUGIN_DIR . 'includes/class-ajax-handler.php';
 
 // Initialize the plugin
 add_action('plugins_loaded', function() {
-    new WPB_REST_API();
-    new WPB_Ajax_Handler();
+    if ( class_exists('WPB_REST_API') ) {
+        new WPB_REST_API();
+    }
+
+    if ( class_exists('WPB_Ajax_Handler') ) {
+        new WPB_Ajax_Handler();
+    }
 });
 
 // Add admin notice for successful activation
 add_action('admin_notices', function() {
-    if (get_transient('wpb_activated')) {
+    if ( get_transient('wpb_activated') ) {
         ?>
         <div class="notice notice-success is-dismissible">
-            <p><?php esc_html_e('WPBulkify Worker is now active! Your browser extension can now perform bulk plugin installations.', 'wpbulkify'); ?></p>
+            <p><?php esc_html_e('WPBulkify is now active! Your browser extension can now perform bulk plugin installations.', 'wpbulkify'); ?></p>
         </div>
         <?php
         delete_transient('wpb_activated');
