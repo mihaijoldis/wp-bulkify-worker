@@ -2,15 +2,28 @@
 /**
  * Plugin Name: WPBulkify
  * Plugin URI: https://wpbulkify.com/
- * Author URI: https://wpbulkify.com/
+ * Author URI: https://profiles.wordpress.org/wpbulkify/
  * Description: Enables bulk plugin installation via the WPBulkify browser extension.
  * Version: 1.0.0
  * Author: WPBulkify
  * License: GPL v2 or later
  * Text Domain: wpbulkify
+ *  
+ * WPBulkify is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * any later version.
+ *
+ * WPBulkify is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with WPBulkify. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Prevent direct access
+ // Prevent direct access
 if ( ! defined('ABSPATH')) {
     exit;
 }
