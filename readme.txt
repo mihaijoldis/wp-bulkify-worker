@@ -1,4 +1,4 @@
-=== WPBulkify Plugin Worker ===
+=== WPBulkify ===
 Contributors: wpbulkify
 Tags: plugins, bulk install, automation, management, rest
 Requires at least: 5.0
@@ -42,15 +42,15 @@ Save time, reduce errors, and make plugin management a breeze! 🌟
 
 == Installation ==
 
-1. Upload the plugin files to the `/wp-content/plugins/wp-bulkify-worker` directory
+1. Upload the plugin files to the `/wp-content/plugins/wpbulkify` directory
 2. Activate the plugin through the 'Plugins' screen in WordPress
-3. Use with the WPBulkify Plugin Worker browser Extension
+3. Use with the WPBulkify browser Extension
 
 == Frequently Asked Questions ==
 
-= What is WPBulkify Plugin Worker? =
+= What is WPBulkify? =
 
-WPBulkify Plugin Worker is a WordPress plugin that enables bulk installation and management of plugins through the WPBulkify browser extension. It provides the necessary backend functionality to handle multiple plugin installations efficiently.
+WPBulkify is a WordPress plugin that enables bulk installation and management of plugins through the WPBulkify browser extension. It provides the necessary backend functionality to handle multiple plugin installations efficiently.
 
 = Do I need the browser extension to use this plugin? =
 

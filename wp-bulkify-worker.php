@@ -1,13 +1,13 @@
 <?php
 /**
- * Plugin Name: WPBulkify Plugin Worker
+ * Plugin Name: WPBulkify
  * Plugin URI: https://wpbulkify.com/
  * Author URI: https://wpbulkify.com/
  * Description: Enables bulk plugin installation via the WPBulkify browser extension.
  * Version: 1.0.0
  * Author: WPBulkify
  * License: GPL v2 or later
- * Text Domain: wp-bulkify-worker
+ * Text Domain: wpbulkify
  */
 
 // Prevent direct access
@@ -36,7 +36,7 @@ add_action('admin_notices', function() {
     if (get_transient('wpb_activated')) {
         ?>
         <div class="notice notice-success is-dismissible">
-            <p><?php esc_html_e('WPBulkify Plugin Worker is now active! Your browser extension can now perform bulk plugin installations.', 'wp-bulkify-worker'); ?></p>
+            <p><?php esc_html_e('WPBulkify Worker is now active! Your browser extension can now perform bulk plugin installations.', 'wpbulkify'); ?></p>
         </div>
         <?php
         delete_transient('wpb_activated');

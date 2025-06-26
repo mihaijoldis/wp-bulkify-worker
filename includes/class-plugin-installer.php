@@ -43,13 +43,13 @@ class WPB_Plugin_Installer {
                 
                 if ($plugin_file) {
                     $result['status'] = 'already_installed';
-                    $result['message'] = __('Plugin already installed', 'wp-bulkify-worker');
+                    $result['message'] = __('Plugin already installed', 'wpbulkify');
                     $result['details']['plugin_file'] = $plugin_file;
                     
                     // Check if active
                     if (is_plugin_active($plugin_file)) {
                         $result['status'] = 'already_active';
-                        $result['message'] = __('Plugin already installed and active', 'wp-bulkify-worker');
+                        $result['message'] = __('Plugin already installed and active', 'wpbulkify');
                     } elseif ($activate) {
                         // Activate the plugin
                         $activation = activate_plugin($plugin_file);
@@ -58,7 +58,7 @@ class WPB_Plugin_Installer {
                             $result['message'] = $activation->get_error_message();
                         } else {
                             $result['status'] = 'activated';
-                            $result['message'] = __('Plugin activated successfully', 'wp-bulkify-worker');
+                            $result['message'] = __('Plugin activated successfully', 'wpbulkify');
                         }
                     }
                 } else {
@@ -106,13 +106,13 @@ class WPB_Plugin_Installer {
                             $result['message'] = $install_result->get_error_message();
                             $result['details']['install_error'] = $install_result->get_error_code();
                         } elseif (!$install_result) {
-                            $result['message'] = __('Installation failed', 'wp-bulkify-worker');
+                            $result['message'] = __('Installation failed', 'wpbulkify');
                             if (!empty($skin->errors)) {
                                 $result['details']['skin_errors'] = $skin->errors;
                             }
                         } else {
                             $result['status'] = 'installed';
-                            $result['message'] = __('Plugin installed successfully', 'wp-bulkify-worker');
+                            $result['message'] = __('Plugin installed successfully', 'wpbulkify');
                             
                             // Clear plugin cache
                             wp_clean_plugins_cache();
@@ -132,12 +132,12 @@ class WPB_Plugin_Installer {
                                         
                                         $result['message'] = sprintf(
 											/* translators: %s: Error message from plugin activation */
-                                            __('Plugin installed but activation failed: %s', 'wp-bulkify-worker'),
+                                            __('Plugin installed but activation failed: %s', 'wpbulkify'),
                                             $activation->get_error_message()
                                         );
                                     } else {
                                         $result['status'] = 'installed_activated';
-                                        $result['message'] = __('Plugin installed and activated successfully', 'wp-bulkify-worker');
+                                        $result['message'] = __('Plugin installed and activated successfully', 'wpbulkify');
                                     }
                                 }
                             }
