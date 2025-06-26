@@ -17,7 +17,7 @@ class WPB_REST_API {
      * Register REST API routes
      */
     public function register_routes() {
-        $namespace = 'wp-bulkify/v1';
+        $namespace = 'wpbulkify/v1';
         
         // Install endpoint
         register_rest_route($namespace, '/install', array(

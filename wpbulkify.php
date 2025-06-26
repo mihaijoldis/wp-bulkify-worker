@@ -78,7 +78,7 @@ add_action('admin_footer', function() {
         window.wpbHelper = {
             version: '<?php echo esc_attr( WPB_VERSION ); ?>',
             ajaxUrl: '<?php echo esc_url( admin_url('admin-ajax.php') ); ?>',
-            restUrl: '<?php echo esc_url( rest_url('wp-bulkify/v1') ); ?>',
+            restUrl: '<?php echo esc_url( rest_url('wpbulkify/v1') ); ?>',
             nonce: '<?php echo esc_attr( wp_create_nonce('wp_rest') ); ?>',
             restNonce: '<?php echo esc_attr( wp_create_nonce('wp_rest') ); ?>',
             initialized: true

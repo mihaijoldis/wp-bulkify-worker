@@ -77,7 +77,7 @@ class WPB_Ajax_Handler {
             version: '<?php echo esc_attr( WPB_VERSION ); ?>',
             ajaxUrl: '<?php echo esc_url( admin_url('admin-ajax.php') ); ?>',
             nonce: '<?php echo esc_attr( wp_create_nonce('wpb_ajax_nonce') ); ?>',
-            restUrl: '<?php echo esc_url( rest_url('wp-bulkify/v1') ); ?>',
+            restUrl: '<?php echo esc_url( rest_url('wpbulkify/v1') ); ?>',
             restNonce: '<?php echo esc_attr( wp_create_nonce('wp_rest') ); ?>',
         };
         </script>
