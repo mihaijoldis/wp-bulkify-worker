@@ -14,7 +14,7 @@ Enables bulk plugin installation via the WPBulkify browser Extension.
 
 🚀 **Supercharge your WordPress plugin management!** 
 
-WPBulkify is your powerful backend companion that works seamlessly with the WPBulkify extension to transform how you handle WordPress plugins.
+WPBulkify is your powerful backend companion that works seamlessly with the WPBulkify browser extension to transform how you handle WordPress plugins.
 
 **What makes this plugin special?** ✨
 
