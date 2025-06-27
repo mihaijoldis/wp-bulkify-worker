@@ -66,10 +66,26 @@ class WPB_REST_API {
             'permission_callback' => array($this, 'check_permissions')
         ));
         
-        // Deactivate and delete plugins endpoint
-        register_rest_route($namespace, '/deactivate-delete', array(
+        // Deactivate plugins only endpoint
+        register_rest_route($namespace, '/deactivate', array(
             'methods' => WP_REST_Server::CREATABLE,
-            'callback' => array($this, 'deactivate_delete_plugins'),
+            'callback' => array($this, 'deactivate_plugins'),
+            'permission_callback' => array($this, 'check_permissions'),
+            'args' => array(
+                'plugins' => array(
+                    'required' => true,
+                    'type' => 'array',
+                    'items' => array(
+                        'type' => 'string'
+                    )
+                )
+            )
+        ));
+
+        // Delete plugins endpoint
+        register_rest_route($namespace, '/delete', array(
+            'methods' => WP_REST_Server::CREATABLE,
+            'callback' => array($this, 'delete_plugins'),
             'permission_callback' => array($this, 'check_permissions'),
             'args' => array(
                 'plugins' => array(
@@ -229,47 +245,46 @@ class WPB_REST_API {
     }
     
     /**
-     * Deactivate and delete plugins
+     * Deactivate plugins only (no delete)
      */
-    public function deactivate_delete_plugins($request) {
+    public function deactivate_plugins($request) {
         $plugins = $request->get_param('plugins');
-        
+
         if (!function_exists('deactivate_plugins')) {
             require_once ABSPATH . 'wp-admin/includes/plugin.php';
         }
-        
+
         $results = array();
         $summary = array(
             'total' => count($plugins),
             'deactivated' => 0,
-            'deleted' => 0,
             'errors' => 0
         );
-        
+
         foreach ($plugins as $plugin_slug) {
             $result = array(
                 'slug' => $plugin_slug,
                 'status' => 'unknown',
                 'message' => ''
             );
-            
+
             try {
                 // Find the plugin file
                 $plugin_file = null;
                 $installed_plugins = get_plugins();
-                
+
                 foreach ($installed_plugins as $file => $plugin_data) {
                     $slug = dirname($file);
                     if ($slug === '.') {
                         $slug = basename($file, '.php');
                     }
-                    
+
                     if ($slug === $plugin_slug) {
                         $plugin_file = $file;
                         break;
                     }
                 }
-                
+
                 if (!$plugin_file) {
                     $result['status'] = 'not_found';
                     $result['message'] = 'Plugin not found';
@@ -277,67 +292,119 @@ class WPB_REST_API {
                     $results[] = $result;
                     continue;
                 }
-                
+
                 // Check if plugin is active
                 $is_active = is_plugin_active($plugin_file);
-                
+
                 // Deactivate if active
                 if ($is_active) {
                     deactivate_plugins($plugin_file);
                     $summary['deactivated']++;
-                    $result['message'] .= 'Deactivated. ';
-                }
-                
-                // Delete plugin files manually
-                $plugin_dir = WP_PLUGIN_DIR . '/' . dirname($plugin_file);
-                $deleted = $this->delete_plugin_directory($plugin_dir);
-                
-                if ($deleted) {
-                    $result['status'] = 'deleted';
-                    $result['message'] .= 'Deleted successfully.';
-                    $summary['deleted']++;
+                    $result['status'] = 'deactivated';
+                    $result['message'] = 'Deactivated.';
                 } else {
-                    $result['status'] = 'delete_failed';
-                    $result['message'] .= 'Failed to delete plugin files.';
-                    $summary['errors']++;
+                    $result['status'] = 'already_deactivated';
+                    $result['message'] = 'Plugin already deactivated.';
                 }
-                
             } catch (Exception $e) {
                 $result['status'] = 'error';
                 $result['message'] = 'Error: ' . $e->getMessage();
                 $summary['errors']++;
             }
-            
+
             $results[] = $result;
         }
-        
+
         return new WP_REST_Response(array(
             'success' => true,
             'results' => $results,
             'summary' => $summary
         ), 200);
     }
-    
+
     /**
-     * Recursively delete a directory and its contents
+     * Delete plugins endpoint
      */
-    private function delete_plugin_directory($dir) {
-        if (!is_dir($dir)) {
-            return false;
+    public function delete_plugins($request) {
+        $plugins = $request->get_param('plugins');
+
+        if (!function_exists('deactivate_plugins')) {
+            require_once ABSPATH . 'wp-admin/includes/plugin.php';
         }
-        
-        $files = array_diff(scandir($dir), array('.', '..'));
-        
-        foreach ($files as $file) {
-            $path = $dir . '/' . $file;
-            
-            if (is_dir($path)) {
-                $this->delete_plugin_directory($path);
-            } else {
-                unlink($path);
+        if (!function_exists('delete_plugins')) {
+            require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        }
+        if (!function_exists('get_plugins')) {
+            require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        }
+
+        $results = array();
+        $summary = array(
+            'total' => count($plugins),
+            'deleted' => 0,
+            'errors' => 0
+        );
+
+        foreach ($plugins as $plugin_slug) {
+            $result = array(
+                'slug' => $plugin_slug,
+                'status' => 'unknown',
+                'message' => ''
+            );
+
+            try {
+                // Find the plugin file
+                $plugin_file = null;
+                $installed_plugins = get_plugins();
+
+                foreach ($installed_plugins as $file => $plugin_data) {
+                    $slug = dirname($file);
+                    if ($slug === '.') {
+                        $slug = basename($file, '.php');
+                    }
+                    if ($slug === $plugin_slug) {
+                        $plugin_file = $file;
+                        break;
+                    }
+                }
+
+                if (!$plugin_file) {
+                    $result['status'] = 'not_found';
+                    $result['message'] = 'Plugin not found';
+                    $summary['errors']++;
+                    $results[] = $result;
+                    continue;
+                }
+
+                // Deactivate if active
+                if (is_plugin_active($plugin_file)) {
+                    deactivate_plugins($plugin_file);
+                }
+
+                // Delete the plugin
+                $delete_result = delete_plugins(array($plugin_file));
+                if (is_wp_error($delete_result)) {
+                    $result['status'] = 'error';
+                    $result['message'] = $delete_result->get_error_message();
+                    $summary['errors']++;
+                } else {
+                    $result['status'] = 'deleted';
+                    $result['message'] = 'Deleted.';
+                    $summary['deleted']++;
+                }
+            } catch (Exception $e) {
+                $result['status'] = 'error';
+                $result['message'] = 'Error: ' . $e->getMessage();
+                $summary['errors']++;
             }
+
+            $results[] = $result;
         }
-        
-        return rmdir($dir);
+
+        return new WP_REST_Response(array(
+            'success' => true,
+            'results' => $results,
+            'summary' => $summary
+        ), 200);
     }
 }
