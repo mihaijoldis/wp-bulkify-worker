@@ -381,6 +381,13 @@ class WPB_REST_API {
                     deactivate_plugins($plugin_file);
                 }
 
+                if ( ! function_exists( 'request_filesystem_credentials' ) ) {
+                    require_once ABSPATH . 'wp-admin/includes/file.php';
+                    require_once ABSPATH . 'wp-admin/includes/plugin.php';
+                    require_once ABSPATH . 'wp-admin/includes/misc.php';
+                    require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
+                }
+
                 // Delete the plugin
                 $delete_result = delete_plugins(array($plugin_file));
                 if (is_wp_error($delete_result)) {
