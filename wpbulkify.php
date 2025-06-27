@@ -68,37 +68,42 @@ register_activation_hook(__FILE__, function() {
 
 // Expose helper object to frontend
 add_action('admin_footer', function() {
+    $wpb_nonce = esc_attr( wp_create_nonce('wp_rest') );
+    $wpb_version = esc_attr( WPB_VERSION );
+    $wpb_ajax_url = esc_url( admin_url('admin-ajax.php') );
+    $wpb_rest_url = esc_url( rest_url('wpbulkify/v1') );
     ?>
     <script>
-    if (localStorage.getItem('wpb_debug_mode') === 'true') {
-        console.log('[WPBulkify] admin_footer hook executing...');
-    }
-    // Initialize helper object
-    if (!window.wpbHelper) {
-        window.wpbHelper = {
-            version: '<?php echo esc_attr( WPB_VERSION ); ?>',
-            ajaxUrl: '<?php echo esc_url( admin_url('admin-ajax.php') ); ?>',
-            restUrl: '<?php echo esc_url( rest_url('wpbulkify/v1') ); ?>',
-            nonce: '<?php echo esc_attr( wp_create_nonce('wp_rest') ); ?>',
-            restNonce: '<?php echo esc_attr( wp_create_nonce('wp_rest') ); ?>',
-            initialized: true
-        };
+    (function() {
         if (localStorage.getItem('wpb_debug_mode') === 'true') {
-            console.log('[WPBulkify] Initialized in footer:', window.wpbHelper);
+            console.log('[WPBulkify] admin_footer hook executing...');
         }
-    } else {
+        // Initialize helper object
+        if (!window.wpbHelper) {
+            window.wpbHelper = {
+                version: '<?php echo $wpb_version; ?>',
+                ajaxUrl: '<?php echo $wpb_ajax_url; ?>',
+                restUrl: '<?php echo $wpb_rest_url; ?>',
+                restNonce: '<?php echo $wpb_nonce; ?>',
+                initialized: true
+            };
+            if (localStorage.getItem('wpb_debug_mode') === 'true') {
+                console.log('[WPBulkify] Initialized in footer:', window.wpbHelper);
+            }
+        } else {
+            if (localStorage.getItem('wpb_debug_mode') === 'true') {
+                console.log('[WPBulkify] Already initialized:', window.wpbHelper);
+            }
+        }
+        
+        // Add data attributes to body for easier detection
+        document.body.setAttribute('data-wpb-helper', 'active');
+        document.body.setAttribute('data-wpb-nonce', '<?php echo $wpb_nonce; ?>');
         if (localStorage.getItem('wpb_debug_mode') === 'true') {
-            console.log('[WPBulkify] Already initialized:', window.wpbHelper);
+            console.log('[WPBulkify] Added data-wpb-helper attribute to body');
+            console.log('[WPBulkify] Added nonce to body:', '<?php echo $wpb_nonce; ?>');
         }
-    }
-    
-    // Add data attributes to body for easier detection
-    document.body.setAttribute('data-wpb-helper', 'active');
-    document.body.setAttribute('data-wpb-nonce', '<?php echo esc_attr( wp_create_nonce('wp_rest') ); ?>');
-    if (localStorage.getItem('wpb_debug_mode') === 'true') {
-        console.log('[WPBulkify] Added data-wpb-helper attribute to body');
-        console.log('[WPBulkify] Added nonce to body:', '<?php echo esc_attr( wp_create_nonce('wp_rest') ); ?>');
-    }
+    })();
     </script>
     <?php
 });
