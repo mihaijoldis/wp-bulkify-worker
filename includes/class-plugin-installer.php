@@ -7,7 +7,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class WPB_Plugin_Installer {
+class Wpbulkify_Plugin_Installer {
     
     /**
      * Install multiple plugins

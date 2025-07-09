@@ -7,7 +7,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class WPB_REST_API {
+class Wpbulkify_Rest_Api {
     
     public function __construct() {
         add_action('rest_api_init', array( $this, 'register_routes') );
@@ -128,7 +128,7 @@ class WPB_REST_API {
         $plugins = $request->get_param('plugins');
         $activate = $request->get_param('activate');
         
-        $results = WPB_Plugin_Installer::install_plugins($plugins, $activate);
+        $results = Wpbulkify_Plugin_Installer::install_plugins($plugins, $activate);
 
         // Process results for better response format
         $installed = array();
@@ -188,7 +188,7 @@ class WPB_REST_API {
         return new WP_REST_Response(array(
             'success' => true,
             'message' => 'WPBulkify helper plugin is active',
-            'version' => WPB_VERSION,
+            'version' => WPBULKIFY_VERSION,
             'timestamp' => current_time('mysql')
         ), 200);
     }
@@ -198,7 +198,7 @@ class WPB_REST_API {
      */
     public function get_plugins_status($request) {
         $slugs = $request->get_param('plugins');
-        $results = WPB_Plugin_Installer::get_plugins_status($slugs);
+        $results = Wpbulkify_Plugin_Installer::get_plugins_status($slugs);
         
         return new WP_REST_Response(array(
             'success' => true,

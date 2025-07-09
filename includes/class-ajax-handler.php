@@ -7,12 +7,11 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class WPB_Ajax_Handler {
+class Wpbulkify_Ajax_Handler {
     
     public function __construct() {
         add_action('wp_ajax_wpb_install_plugins', array($this, 'ajax_install_plugins'));
         add_action('wp_ajax_wpb_get_status', array($this, 'ajax_get_status'));
-        add_action('admin_footer', array($this, 'add_ajax_data'));
     }
 
     /**
@@ -41,7 +40,7 @@ class WPB_Ajax_Handler {
             wp_send_json_error('Invalid plugin data');
         }
 
-        $results = WPB_Plugin_Installer::install_plugins($plugins, $activate);
+        $results = Wpbulkify_Plugin_Installer::install_plugins($plugins, $activate);
 
         wp_send_json_success(array(
             'results' => $results,
@@ -58,29 +57,9 @@ class WPB_Ajax_Handler {
         }
 
         wp_send_json_success( array (
-            'version' => WPB_VERSION,
+            'version' => WPBULKIFY_VERSION,
             'ajax_enabled' => true,
-            'nonce' => wp_create_nonce('wpb_ajax_nonce')
+            'nonce' => wp_create_nonce('wpbulkify_ajax_nonce')
         ));
-    }
-    
-    /**
-     * Add AJAX data to admin pages
-     */
-    public function add_ajax_data() {
-        if ( ! current_user_can('install_plugins') ) {
-            return;
-        }
-        ?>
-        <script>
-        window.wpbHelper = {
-            version: '<?php echo esc_attr( WPB_VERSION ); ?>',
-            ajaxUrl: '<?php echo esc_url( admin_url('admin-ajax.php') ); ?>',
-            nonce: '<?php echo esc_attr( wp_create_nonce('wpb_ajax_nonce') ); ?>',
-            restUrl: '<?php echo esc_url( rest_url('wpbulkify/v1') ); ?>',
-            restNonce: '<?php echo esc_attr( wp_create_nonce('wp_rest') ); ?>',
-        };
-        </script>
-        <?php
     }
 }
